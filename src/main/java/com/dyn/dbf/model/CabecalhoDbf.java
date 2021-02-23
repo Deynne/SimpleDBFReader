@@ -1,4 +1,4 @@
-package br.com.pbprev.model.dbf;
+package com.dyn.dbf.model;
 
 import java.util.List;
 import java.io.DataInputStream;
@@ -17,7 +17,6 @@ public class CabecalhoDbf {
 	private byte ano; // byte 1
 	private byte mes; // byte 2
 	private byte dia; // byte 3
-	// TODO ver o que isso significa
 	// dbf usa little endian (bytes menos significativos primeiro), precisa converter para big endian 
 	// (bytes mais significativos primeiro)
 	private int numeroDeRegistros; // byte 3-7 
@@ -32,6 +31,10 @@ public class CabecalhoDbf {
 	private byte idDriverDeLinguagem; // byte 29
 	private byte reservado2[] = new byte[2]; // byte 30-13
 	private CampoDbf [] campos; // byte 32-n {n | 0 <= n <= 255} (cada campo tem 32 bytes);
+	
+	
+	private String [] nome_campos;
+	
 	public static final byte caracterDeTermino = 0x0D; // caracter de termino do array de campo
 	
 	public CabecalhoDbf() {

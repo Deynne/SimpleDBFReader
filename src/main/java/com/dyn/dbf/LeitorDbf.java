@@ -1,4 +1,4 @@
-package br.com.pbprev;
+package com.dyn.dbf;
 
 import java.io.Closeable;
 import java.io.DataInputStream;
@@ -8,16 +8,14 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Array;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import br.com.pbprev.model.dbf.CabecalhoDbf;
-import br.com.pbprev.model.dbf.CampoDbf;
-import br.com.pbprev.util.DbfUtils; 
+import com.dyn.dbf.model.CabecalhoDbf;
+import com.dyn.dbf.model.Campo;
+import com.dyn.dbf.model.CampoDbf;
 
 public class LeitorDbf implements Closeable{
 
@@ -25,6 +23,7 @@ public class LeitorDbf implements Closeable{
 	private DataInputStream dbfStream;
 	private Charset charSet;
 	private CabecalhoDbf cabecalho;
+	private int recordsLidos;
 	
 	private enum CaracterInicial {
 		DADO_DELETADO((byte)0x2A), // equivale ao caracter '*'
@@ -79,37 +78,38 @@ public class LeitorDbf implements Closeable{
 		return cabecalho;
 	}
 	
-	public String[] proximosRegistrosAsString() {
-		List<String> listaDeRegistros = new ArrayList<String>();
-		
+	// Recupera a próxima linha do arquivo de registro
+	public List<Campo> proximosRegistros() {
+		// Se Por algum motivo houveram caracteres sobrando após o cabeçalho, pula eles. Em geral vai pular apenas o caracter de "presente ou deletado"
 		try {
 			byte temp_b;
 			do {
 				temp_b = dbfStream.readByte();
+				// Pode ser que ja tenha terminado o arquivo, nesse caso retorna para indicar que não há mais nada para ler
 				if(temp_b == CabecalhoDbf.caracterDeTermino) 
 					return null;
 //				else if(temp_b == CaracterInicial.DADO_DELETADO.getValue()) dbfStream.skip(cabecalho.getTamanhoDoRegistro()-1);
 				
 			}while(temp_b != CaracterInicial.DADO_PRESENTE.getValue() && temp_b != CaracterInicial.DADO_DELETADO.getValue());
 		} catch(EOFException e) {
-			return null;
+			return null; // Em caso de leitura posterior ao caracter de termino, retornará null para indicar fim do arquivo
 		}
 		catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		// A partir daqui é segudo dizer que há uma linha para ser lida e não haverá problema na leitura. Então incrementa o contador de registros lidos
+		List<Campo> listaDeRegistros = new ArrayList<Campo>();
+		recordsLidos++;
 		
+		// Realiza a leitura de cada coluna e adiciona a lista de registros
 		for(int i =0; i < cabecalho.getTamanhoCampo();i++) {
-			listaDeRegistros.add(new String(getValorCampo(cabecalho.getCampos()[i]),charSet));
-//			getValorCampo(cabecalho.getCampos()[i]);
-			System.out.print(listaDeRegistros.get(i) + " # ");
-//			
-//			System.out.print("#");
+			listaDeRegistros.add(new Campo(cabecalho.getCampos()[i].getNome(),getValorCampo(cabecalho.getCampos()[i]),cabecalho.getCampos()[i].getTipo()));
 		}
 		
-		return listaDeRegistros.toArray(new String[listaDeRegistros.size()]);
+		return listaDeRegistros;
 	}
-
+	
 	private byte[] getValorCampo(CampoDbf campoDbf) {
 		try {
 		int bytesLidos = 0;
@@ -126,7 +126,24 @@ public class LeitorDbf implements Closeable{
 		
 		return null;
 	}
+
+	public int getRecordsLidos() {
+		return recordsLidos;
+	}
+
+
+	public static String[] getValuesAsString(List<Campo> registros, Charset charset) {
+		if(registros == null) return null;
+		List<String> l = new ArrayList<>();
+		registros.forEach(e -> l.add(e.getValorAsString(charset)));
+		
+		return l.toArray(new String[l.size()]);
+		
+	}
 	
-	
+	public String[] getValuesAsString(List<Campo> registros) {
+		return LeitorDbf.getValuesAsString(registros, this.charSet);
+		
+	}
 
 }

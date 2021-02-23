@@ -1,6 +1,11 @@
-package br.com.pbprev.exceptions;
+package com.dyn.dbf.exceptions;
 
 public class CampoDbfIlegalException extends Exception {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3606735081025175122L;
 
 	public CampoDbfIlegalException(String message) {
 		super(message);

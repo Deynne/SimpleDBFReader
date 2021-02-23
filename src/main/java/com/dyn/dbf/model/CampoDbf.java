@@ -1,12 +1,12 @@
-package br.com.pbprev.model.dbf;
+package com.dyn.dbf.model;
 
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
-import br.com.pbprev.exceptions.CampoDbfIlegalException;
+import com.dyn.dbf.exceptions.CampoDbfIlegalException;
+import com.dyn.dbf.util.TiposDbf;
 
 public class CampoDbf {
 	
@@ -51,6 +51,7 @@ public class CampoDbf {
 			
 			// Ja lemos o primeiro caracter do nome para verificar se não era fim do arquivo.
 			// Tendo verificado que não era readicionamos este caracter ao campo de nome
+			// O get retorna o array que conterá o nome (já instanciado)
 			byte[] tempByteArray = campo.getNomeAsByte();
 
 			dbfStream.readFully(tempByteArray, 1, 10);
@@ -90,16 +91,16 @@ public class CampoDbf {
 		return nome;
 	}
 
-	public void setNome(byte[] nome) throws CampoDbfIlegalException {
+	private void setNome(byte[] nome) throws CampoDbfIlegalException {
 		if(nome.length < 11) throw new CampoDbfIlegalException("O campo nome contém a quantidade incorreta de bytes");
 		this.nome = nome;
 	}
 
-	public byte getTipo() {
-		return tipo;
+	public TiposDbf getTipo() {
+		return TiposDbf.encontrarPorValor(tipo);
 	}
 
-	public void setTipo(byte tipo) {
+	private void setTipo(byte tipo) {
 		this.tipo = tipo;
 	}
 
@@ -107,7 +108,7 @@ public class CampoDbf {
 		return reservado1;
 	}
 
-	public void setReservado1(byte[] reservado1) throws CampoDbfIlegalException {
+	private void setReservado1(byte[] reservado1) throws CampoDbfIlegalException {
 		if(reservado1.length < 4) throw new CampoDbfIlegalException("O campo reservado1 contém a quantidade incorreta de bytes");
 		this.reservado1 = reservado1;
 	}
@@ -116,7 +117,7 @@ public class CampoDbf {
 		return tamanhoDoCampo;
 	}
 
-	public void setTamanhoDoCampo(byte tamanhoDoCampo) {
+	private void setTamanhoDoCampo(byte tamanhoDoCampo) {
 		this.tamanhoDoCampo = tamanhoDoCampo;
 	}
 
