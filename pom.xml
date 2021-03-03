@@ -1,41 +1,14 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>br.com.pbprev.portalsegurado</groupId>
-  <artifactId>DBFReader</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
-  
-  <name>DBFReader</name>
-  <description>Leitor de DBF para o portal-segurado</description>
-  <organization>
-  	<name>PBPrev</name>
-  	<url>http://www.pbprev.pb.gov.br/Pbprev</url>
-  </organization>
-  
-  <repositories>
-  	<repository>
-  		<id>mvn-artifact</id>
-  		<name>MVN Repository</name>
-  		<url>https://repo1.maven.org/maven2</url>
-  	</repository>
-  </repositories>
-  <dependencies>
-  <!-- https://mvnrepository.com/artifact/org.jamel.dbf/dbf-reader -->
-  <!-- <dependency>
-    <groupId>org.jamel.dbf</groupId>
-    <artifactId>dbf-reader</artifactId>
-    <version>0.3.0</version>
-  </dependency>
-  <dependency>
-    <groupId>org.jamel.dbf</groupId>
-    <artifactId>dbf-writer</artifactId>
-    <version>0.3.0</version>
-  <dependency>
-	<groupId>com.github.albfernandez</groupId>
-	<artifactId>javadbf</artifactId>
-	<version>1.11.2</version>
-  </dependency>
-  </dependency>-->
-  
-  
-  </dependencies>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.dyn</groupId>
+	<artifactId>SimpleDBFReader</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+
+	<name>SimpleDBFReader</name>
+	<description>Leitor de DBF simples para quem deseja tratar os dados antes de utiliza-los.</description>
+	
+	<url>https://github.com/Deynne/SimpleDBFReader</url>
+	
 </project>

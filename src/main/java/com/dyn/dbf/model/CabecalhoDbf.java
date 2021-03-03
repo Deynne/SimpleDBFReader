@@ -4,25 +4,30 @@ import java.util.List;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
-
+/**
+ * O cabecalho do arquivo dbf sendo lido
+ * @author Deynne Silva
+ * @version 1.0
+ */
 public class CabecalhoDbf {
 
-	private Charset charSet;
-	
 	// A explicação para estes campos do cabeçalho podem ser encontradas no seguinte link: https://en.wikipedia.org/wiki/.dbf
 	private byte tipoDeDbf; // byte 0
 	private byte ano; // byte 1
 	private byte mes; // byte 2
 	private byte dia; // byte 3
+	
 	// dbf usa little endian (bytes menos significativos primeiro), precisa converter para big endian 
 	// (bytes mais significativos primeiro)
 	private int numeroDeRegistros; // byte 3-7 
+	
 	private short tamanhoHeader; // byte 8-9
+	
 	// inclui flag de deletado
 	private short tamanhoDoRegistro; // byte 10-11
+	
 	private byte reservado1[] = new byte[2]; // byte 12-13
 	private byte flagDeTransacao; // byte 14
 	private byte flagEncriptacao; // byte 15
@@ -30,22 +35,26 @@ public class CabecalhoDbf {
 	private byte flagMdx; // byte 28
 	private byte idDriverDeLinguagem; // byte 29
 	private byte reservado2[] = new byte[2]; // byte 30-13
+	
 	private CampoDbf [] campos; // byte 32-n {n | 0 <= n <= 255} (cada campo tem 32 bytes);
 	
 	
 	private String [] nome_campos;
-	
+	private static final byte tamanhoCampo = 32;
 	public static final byte caracterDeTermino = 0x0D; // caracter de termino do array de campo
 	
-	public CabecalhoDbf() {
-		this(StandardCharsets.UTF_8);
-	}
+	/**
+	 * Contrutor basico do cabecalho.
+	 */
+	public CabecalhoDbf() {	}
 	
-	public CabecalhoDbf(Charset charSet) {
-		this.charSet = charSet;
-	}
 	
-	public void buildCabecalho(DataInputStream dbfStream) {
+	/**
+	 * Um construtor para o cabeçalho do dbf.
+	 * O padrão de montagem do cabeçalho é feito seguindo o formato definido para os arquivos dbf.
+	 * @param dbfStream O Stream do arquivo dbf sendo lido.
+	 */
+	public void buildCabecalho(DataInputStream dbfStream, Charset charset) {
 		if(dbfStream == null) return;
 		
 		try {
@@ -53,10 +62,13 @@ public class CabecalhoDbf {
 			ano = dbfStream.readByte();
 			mes = dbfStream.readByte();
 			dia = dbfStream.readByte();
-			numeroDeRegistros = Integer.reverseBytes(dbfStream.readInt());
+			
+			// reverte por que precisa converter de little endian pra big endian
+			numeroDeRegistros = Integer.reverseBytes(dbfStream.readInt()); 
 			tamanhoHeader = Short.reverseBytes(dbfStream.readShort());
 			tamanhoDoRegistro = Short.reverseBytes(dbfStream.readShort());
 			
+			this.nome_campos = new String[(tamanhoHeader-CabecalhoDbf.tamanhoCampo)/CabecalhoDbf.tamanhoCampo]; // Cada campo tem 32 bytes
 			int i = 0;
 			
 			for(i = 0; i < reservado1.length;i++) {
@@ -77,7 +89,7 @@ public class CabecalhoDbf {
 				reservado2[i] = dbfStream.readByte();
 			}
 			// Cada campo tem 32 bytes e o tamanho do header é em bytes
-			instanciaCampos(dbfStream);
+			instanciaCampos(dbfStream, charset);
 			dbfStream.readByte(); // caracter de termino
 //			dbfStream.readShort()
 		} catch (IOException e) {
@@ -88,148 +100,156 @@ public class CabecalhoDbf {
 	}
 	
 	
-
-	private void instanciaCampos(DataInputStream dbfStream) {
+	/**
+	 * Realiza a instância dos campos presentes dentro do dbf.
+	 * @param dbfStream A stream do dbf sendo lido.
+	 */
+	private void instanciaCampos(DataInputStream dbfStream,Charset charset) {
 		List<CampoDbf> listaDeCampos = new ArrayList<CampoDbf>();
 		
-		final int tamanhoDoCampo = 32;
+		final int tamanhoDoCampo = CabecalhoDbf.tamanhoCampo;
 		int lendo = tamanhoDoCampo; 
-		
+		int i = 0;
 		while(lendo <= this.tamanhoHeader - tamanhoDoCampo) {
-			CampoDbf campo = CampoDbf.buildCampo(dbfStream, charSet);
-			if(campo == null) return;
-			else listaDeCampos.add(campo);
+			CampoDbf campo = CampoDbf.buildCampo(dbfStream, charset);
+			
+			listaDeCampos.add(campo);
+			this.nome_campos[i++] = campo.getNome();
+			
 			lendo += tamanhoDoCampo;
 		}
 		this.campos = listaDeCampos.toArray(new CampoDbf[listaDeCampos.size()]);
 	}
 
+	/**
+	 * Retorna o tipo de dbf. Ver documentação do arquivo dbf para entender como diferenciar os tipos.
+	 * @return Um <b>byte</b> que representa o tipo do dbf 
+	 */
 	public byte getTipoDeDbf() {
 		return tipoDeDbf;
 	}
 
-	public void setTipoDeDbf(byte tipoDeDbf) {
-		this.tipoDeDbf = tipoDeDbf;
-	}
-
+	/**
+	 * Obtêm o ano da ultima atualização
+	 * @return Um <b>byte</b> representando o ano da ultima atualização
+	 */
 	public byte getAno() {
 		return ano;
 	}
-
-	public void setAno(byte ano) {
-		this.ano = ano;
-	}
-
+	/**
+	 * Obtêm o mês da ultima atualização
+	 * @return Um <b>byte</b> representando o mês da ultima atualização
+	 */
 	public byte getMes() {
 		return mes;
 	}
-
-	public void setMes(byte mes) {
-		this.mes = mes;
-	}
-
+	/**
+	 * Obtêm o dia da ultima atualização
+	 * @return Um <b>byte</b> representando o dia da ultima atualização
+	 */
 	public byte getDia() {
 		return dia;
 	}
-
-	public void setDia(byte dia) {
-		this.dia = dia;
-	}
-
+	/**
+	 * Obtêm o numero de registros presentes no dbf
+	 * @return Um <b>int</b> com o valor da quantidade de registros no arquivo 
+	 */
 	public int getNumeroDeRegistros() {
 		return numeroDeRegistros;
 	}
 
-	public void setNumeroDeRegistros(int numeroDeRegistros) {
-		this.numeroDeRegistros = numeroDeRegistros;
-	}
-
+	/**
+	 * A quantidade de bytes no header
+	 * @return Um <b>short</b> com o valor da quantidade de bytes presente no header
+	 */
 	public short getTamanhoHeader() {
 		return tamanhoHeader;
 	}
 
-	public void setTamanhoHeader(short tamanhoHeader) {
-		this.tamanhoHeader = tamanhoHeader;
-	}
-
+	/**
+	 * O tamanho de uma linha de dados no arquivo. Inclui o byte de verificação de deleção.
+	 * @return Um <b>byte</b> com o valor da quantidade de bytes em uma linha de dados no arquivo dbf.
+	 */
 	public short getTamanhoDoRegistro() {
 		return tamanhoDoRegistro;
-	}
-
-	public void setTamanhoDoRegistro(short tamanhoDoRegistro) {
-		this.tamanhoDoRegistro = tamanhoDoRegistro;
 	}
 
 	public byte[] getReservado1() {
 		return reservado1;
 	}
 
-	public void setReservado1(byte[] reservado1) {
-		this.reservado1 = reservado1;
-	}
-
 	public byte getFlagDeTransacao() {
 		return flagDeTransacao;
-	}
-
-	public void setFlagDeTransacao(byte flagDeTransacao) {
-		this.flagDeTransacao = flagDeTransacao;
 	}
 
 	public byte getFlagEncriptacao() {
 		return flagEncriptacao;
 	}
 
-	public void setFlagEncriptacao(byte flagEncriptacao) {
-		this.flagEncriptacao = flagEncriptacao;
-	}
-
 	public byte[] getReservadoDOS() {
 		return reservadoDOS;
-	}
-
-	public void setReservadoDOS(byte[] reservadoDOS) {
-		this.reservadoDOS = reservadoDOS;
 	}
 
 	public byte getFlagMdx() {
 		return flagMdx;
 	}
 
-	public void setFlagMdx(byte flagMdx) {
-		this.flagMdx = flagMdx;
-	}
-
 	public byte getIdDriverDeLinguagem() {
 		return idDriverDeLinguagem;
 	}
 
-	public void setIdDriverDeLinguagem(byte idDriverDeLinguagem) {
-		this.idDriverDeLinguagem = idDriverDeLinguagem;
-	}
 
 	public byte[] getReservado2() {
 		return reservado2;
 	}
 
-	public void setReservado2(byte[] reservado2) {
-		this.reservado2 = reservado2;
-	}
 
+	/**
+	 * A lista de campos presentes no arquivo.
+	 * @return Um {@link CampoDbf}[ ] com a lista de campos presentes no arquivo dbf.
+	 */
 	public CampoDbf[] getCampos() {
 		return campos;
 	}
 
-	public void setCampos(CampoDbf[] campos) {
-		this.campos = campos;
-	}
-
-	public byte getCaracterDeTermino() {
-		return caracterDeTermino;
+	/**
+	 * A quantidade de campos presentes no arquivo dbf
+	 * @return um <b>int</b> contendo os campos presentes no dbf.
+	 */
+	public int getNumCampos() {
+		return this.campos.length;
 	}
 	
-	public int getTamanhoCampo() {
-		return this.campos.length;
+	/**
+	 * <p>
+	 *   Retorna o indice de um campo de acordo com parte do nome dele.
+	 * </p>
+	 * <p>
+	 *   A busca é realizada em ambos os sentidos (inicio-fim e fim-inicio) simultâneamete, mas prioriza os campos próximos do início da lista.
+	 * </p>
+	 * @param nomeCampo Nome do campo que se deseja encontrar
+	 * @return O indice do campo buscado ou -1 se nenhum campo for encontrado
+	 */
+	public int getIdByNome(String nomeCampo) {
+		for(int i = 0, j = this.nome_campos.length - 1; i <= this.nome_campos.length/2;i++,j--) {
+			if(this.nome_campos[i].trim().equals(nomeCampo)) {
+				return i;
+			}
+			else if(this.nome_campos[j].trim().equals(nomeCampo)) {
+				return j;
+			}
+		}
+		return -1;
+	}
+	
+	/**
+	 * O nome do campo de acordo com o indice
+	 * @param index o indice do campo.
+	 * @return Uma {@link String} com o nome do campo identificado no indice. <b>null</b> para indices invalidos.
+	 */
+	public String getNomeById(int indice) {
+		if(indice >= this.nome_campos.length || indice < 0) return null;
+		return this.nome_campos[indice];
 	}
 
 	@Override
@@ -240,7 +260,7 @@ public class CabecalhoDbf {
 				+ ", flagDeTransacao=" + flagDeTransacao + ", flagEncriptacao=" + flagEncriptacao + ", reservadoDOS="
 				+ Arrays.toString(reservadoDOS) + ", flagMdx=" + flagMdx + ", idDriverDeLinguagem="
 				+ idDriverDeLinguagem + ", reservado2=" + Arrays.toString(reservado2) + ", campos="
-				+ Arrays.toString(campos) + ", charSet=" + charSet + " ]\n";
+				+ Arrays.toString(campos) + " ]\n";
 	}
 
 	

@@ -5,12 +5,16 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 
-import com.dyn.dbf.exceptions.CampoDbfIlegalException;
 import com.dyn.dbf.util.TiposDbf;
 
+/**
+ * Um campo do cabeçalho do dbf. Cada campo representa uma coluna do arquivo.
+ * @author Deynne Silva
+ * @version 1.0
+ */
 public class CampoDbf {
 	
-	private Charset charSet;
+	private Charset charset;
 	
 	// A explicação para estes campos do cabeçalho podem ser encontradas no seguinte link: https://en.wikipedia.org/wiki/.dbf
 	
@@ -26,10 +30,15 @@ public class CampoDbf {
 	private byte flagMdx; // byte 31
 	
 
+	/**
+	 * Construtor basico do campo.
+	 */
+	private CampoDbf() { }
 
-	private CampoDbf() {
-	}
-
+	/**
+	 * O nome do campo como Texto
+	 * @return Uma {@link String} do nome do campo.
+	 */
 	public String getNome() {
 		int fimString = nome.length;
 		for(int i = 0; i < nome.length;i++) {
@@ -37,17 +46,23 @@ public class CampoDbf {
 				fimString = i;
 			}
 		}
-		return new String(nome,0,fimString,charSet);
+		return new String(nome,0,fimString,charset);
 	}
-	
-	public static CampoDbf buildCampo(DataInputStream dbfStream, Charset charSet) {
+	/**
+	 * O Construtor do campo. Realiza a leitura do stream de dados do dbf e monta o campo.
+	 * O padrão de montagem do campo é feito seguindo o formato definido para o arquivo dbf.
+	 * @param dbfStream
+	 * @param charset
+	 * @return
+	 */
+	public static CampoDbf buildCampo(DataInputStream dbfStream, Charset charset) {
 		try {
 			
 			byte byteTemporario = dbfStream.readByte();
 			// Se o caracter sendo lido é o caracter de termino, chegamos ao fim do arquivo.
 			if(byteTemporario == (byte) CabecalhoDbf.caracterDeTermino) return null;
 			CampoDbf campo = new CampoDbf();
-			campo.setCharSet(charSet);
+			campo.setCharSet(charset);
 			
 			// Ja lemos o primeiro caracter do nome para verificar se não era fim do arquivo.
 			// Tendo verificado que não era readicionamos este caracter ao campo de nome
@@ -78,7 +93,6 @@ public class CampoDbf {
 			
 			return campo;
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -86,16 +100,18 @@ public class CampoDbf {
 		
 	}
 	
-	
+	/**
+	 * Para quem deseja trabalhar com o nome no formato original
+//	 * @return um <b>byte[ ]</b> representando o nome do campo.
+	 */
 	public byte[] getNomeAsByte() {
 		return nome;
 	}
 
-	private void setNome(byte[] nome) throws CampoDbfIlegalException {
-		if(nome.length < 11) throw new CampoDbfIlegalException("O campo nome contém a quantidade incorreta de bytes");
-		this.nome = nome;
-	}
-
+	/**
+	 * O tipo do dado presente no campo
+	 * @return Um {@link TiposDbf} representando o tipo presente no campo.
+	 */
 	public TiposDbf getTipo() {
 		return TiposDbf.encontrarPorValor(tipo);
 	}
@@ -108,15 +124,15 @@ public class CampoDbf {
 		return reservado1;
 	}
 
-	private void setReservado1(byte[] reservado1) throws CampoDbfIlegalException {
-		if(reservado1.length < 4) throw new CampoDbfIlegalException("O campo reservado1 contém a quantidade incorreta de bytes");
-		this.reservado1 = reservado1;
-	}
-
+	/**
+	 * Quantidade de bytes do campo
+	 * @return Um <b>byte</b> representando a quantidade de byte do campo.
+	 */
 	public byte getTamanhoDoCampo() {
 		return tamanhoDoCampo;
 	}
 
+	
 	private void setTamanhoDoCampo(byte tamanhoDoCampo) {
 		this.tamanhoDoCampo = tamanhoDoCampo;
 	}
@@ -125,7 +141,7 @@ public class CampoDbf {
 		return contagemDecimal;
 	}
 
-	public void setContagemDecimal(byte contagemDecimal) {
+	private void setContagemDecimal(byte contagemDecimal) {
 		this.contagemDecimal = contagemDecimal;
 	}
 
@@ -133,16 +149,11 @@ public class CampoDbf {
 		return idAreaDeTrabalho;
 	}
 
-	public void setIdAreaDeTrabalho(byte[] idAreaDeTrabalho) throws CampoDbfIlegalException {
-		if(idAreaDeTrabalho.length < 2) throw new CampoDbfIlegalException("O campo idAreaDeTrabalho contém a quantidade incorreta de bytes");
-		this.idAreaDeTrabalho = idAreaDeTrabalho;
-	}
-
 	public byte getExemplo() {
 		return exemplo;
 	}
 
-	public void setExemplo(byte exemplo) {
+	private void setExemplo(byte exemplo) {
 		this.exemplo = exemplo;
 	}
 
@@ -150,25 +161,24 @@ public class CampoDbf {
 		return reservado2;
 	}
 
-	public void setReservado2(byte[] reservado2) throws CampoDbfIlegalException {
-		if(reservado2.length < 10) throw new CampoDbfIlegalException("O campo reservado2 contém a quantidade incorreta de bytes");
-		this.reservado2 = reservado2;
-	}
-
 	public byte getFlagMdx() {
 		return flagMdx;
 	}
 
-	public void setFlagMdx(byte flagMdx) {
+	private void setFlagMdx(byte flagMdx) {
 		this.flagMdx = flagMdx;
 	}
 	
+	/**
+	 * O charset sendo utilizado para gerar o nome.
+	 * @return O {@link Charset} que esta está sendo utilizado para criar a string do nome.
+	 */
 	public Charset getCharSet() {
-		return charSet;
+		return charset;
 	}
 
-	public void setCharSet(Charset charSet) {
-		this.charSet = charSet;
+	private void setCharSet(Charset charset) {
+		this.charset = charset;
 	}
 
 	@Override
@@ -176,7 +186,7 @@ public class CampoDbf {
 		return "CampoDbf [ nome=" + getNome() + ", tipo=" + tipo + ", reservado1="
 				+ Arrays.toString(reservado1) + ", tamanhoDoCampo=" + tamanhoDoCampo + ", contagemDecimal="
 				+ contagemDecimal + ", idAreaDeTrabalho=" + Arrays.toString(idAreaDeTrabalho) + ", exemplo=" + exemplo
-				+ ", reservado2=" + Arrays.toString(reservado2) + ", flagMdx=" + flagMdx + ", charSet=" + charSet + " ]\n";
+				+ ", reservado2=" + Arrays.toString(reservado2) + ", flagMdx=" + flagMdx + ", charset=" + charset + " ]\n";
 	}
 
 	
