@@ -59,7 +59,9 @@ public class LeitorDbf implements Closeable{
 	 * @param file Um file indicando o arquivo dbf a ser lido
 	 * @throws FileNotFoundException Se o arquivo não existir.
 	 * 
-	 * @see {@link #LeitorDbf(File, Charset)}, {@link #LeitorDbf(InputStream)}, {@link #LeitorDbf(InputStream, Charset)}
+	 * @see #LeitorDbf(File, Charset)
+	 * @see #LeitorDbf(InputStream)
+	 * @see #LeitorDbf(InputStream, Charset)
 	 */
 	public LeitorDbf(File file) throws FileNotFoundException {
 		this(new FileInputStream(file));
@@ -73,6 +75,10 @@ public class LeitorDbf implements Closeable{
 	 * 	O charset padrão é {@link StandardCharsets#UTF_8}.
 	 * </p>
 	 * @param stream A stream do arquivo dbf que será lido.
+	 * 
+	 * @see #LeitorDbf(File, Charset)
+	 * @see #LeitorDbf(File)
+	 * @see #LeitorDbf(InputStream, Charset)
 	 */
 	public LeitorDbf(InputStream stream) {
 		this(stream,StandardCharsets.UTF_8);
@@ -85,6 +91,10 @@ public class LeitorDbf implements Closeable{
 	 * @param file Um file indicando o arquivo dbf a ser lido
 	 * @param charset O charset a ser utilizado na conversão dos dados para string.
 	 * @throws FileNotFoundException Caso o arquivo não exista.
+	 * 
+	 * @see #LeitorDbf(InputStream, Charset)
+	 * @see #LeitorDbf(InputStream)
+	 * @see #LeitorDbf(File)
 	 */
 	public LeitorDbf(File file, Charset charset) throws FileNotFoundException {
 		this(new FileInputStream(file),charset);
@@ -96,6 +106,10 @@ public class LeitorDbf implements Closeable{
 	 * </p>
 	 * @param stream A stream do arquivo dbf que será lido.
 	 * @param charset O charset a ser utilizado na conversão dos dados para string.
+	 * 
+	 * @see #LeitorDbf(File, Charset)
+	 * @see #LeitorDbf(InputStream)
+	 * @see #LeitorDbf(File)
 	 */
 	public LeitorDbf(InputStream stream, Charset charset) {
 		inputStream = stream;

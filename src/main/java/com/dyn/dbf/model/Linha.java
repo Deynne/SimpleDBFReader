@@ -24,14 +24,26 @@ public class Linha {
 	}
 	
 	/**
-	 * Retorna os dados de uma linha de dados como strings
+	 * Retorna os dados de uma linha de dados como strings.
 	 * @param registros A linha da qual se espera obter as informações como string
 	 * @param charset O charset que deve ser utilizado na conversão dos dados para string
 	 * @return Um {@link String}[] contendo os dados da linha.
+	 * @see #getValuesAsString(boolean)
 	 */
 	public String[] getValuesAsString() {
+		return this.getValuesAsString(false);
+	}
+	
+	/**
+	 * Retorna os dados de uma linha de dados como strings
+	 * @param registros A linha da qual se espera obter as informações como string
+	 * @param charset O charset que deve ser utilizado na conversão dos dados para string
+	 * @param trim Indica se deve eliminar espaços em branco do dado
+	 * @return Um {@link String}[] contendo os dados da linha.
+	 */
+	public String[] getValuesAsString(boolean trim) {
 		List<String> l = new ArrayList<>();
-		colunas.forEach(e -> l.add(e.getValorAsString(charset)));
+		colunas.forEach(e -> l.add(trim?e.getValorAsString(charset).trim():e.getValorAsString(charset)));
 		
 		return l.toArray(new String[l.size()]);
 		
@@ -41,14 +53,27 @@ public class Linha {
 	 * Retorna o valor de um campo da linha, de acordo com o nome, como uma string
 	 * @param indice O indice do campo que se deseja obter o valor.
 	 * @return Uma {@link String} com o valor do campo. <b>null</b> caso a posição seja invalida.
+	 * @see #getValueAsString(int, boolean)
 	 * @see #getValueAsString(String)
+	 * @see #getValueAsString(String, boolean) 
 	 */
 	public String getValueAsString(int indice) {
+		return this.getValueAsString(indice,false);
+	}
+	
+	/**
+	 * Retorna o valor de um campo da linha, de acordo com o nome, como uma string
+	 * @param indice O indice do campo que se deseja obter o valor.
+	 * @param trim Indica se deve eliminar espaços em branco do dado
+	 * @return Uma {@link String} com o valor do campo. <b>null</b> caso a posição seja invalida.
+	 * @see #getValueAsString(String)
+	 */
+	public String getValueAsString(int indice, boolean trim) {
 		Campo c = this.getCampo(indice);
 		
 		if(c == null) return null;
 		
-		return c.getValorAsString(charset);
+		return trim?c.getValorAsString(charset).trim():c.getValorAsString(charset);
 	}
 	
 	/**
@@ -85,13 +110,22 @@ public class Linha {
 	 * @see #getValueAsString(int)
 	 */
 	public String getValueAsString(String nome) {
-		Iterator<Campo> i = colunas.iterator();
-		Campo c;
-		while(i.hasNext()) {
-			c = i.next();
-			if(c.getNome().trim().equals(nome)) return c.getValorAsString(charset);
-		}
-		return null;
+		return this.getValueAsString(nome,false);
+	}
+	
+	/**
+	 * Retorna o valor de um campo da linha, de acordo com o nome, como uma string
+	 * @param nome O nome do campo que se deseja obter o valor.
+	 * @param trim Indica se deve eliminar espaços em branco do dado
+	 * @return Uma {@link String} com o valor do campo. <b>null</b> caso não exista campo com o nome informado.
+	 * @see #getValueAsString(int)
+	 */
+	public String getValueAsString(String nome, boolean trim) {
+		Campo c = this.getCampo(nome);
+		
+		if(c == null) return null;
+		
+		return trim?c.getValorAsString(charset).trim():c.getValorAsString(charset);
 	}
 	
 	/**
@@ -101,13 +135,11 @@ public class Linha {
 	 * @see #getValue(int)
 	 */
 	public byte[] getValue(String nome) {
-		Iterator<Campo> i = colunas.iterator();
-		Campo c;
-		while(i.hasNext()) {
-			c = i.next();
-			if(c.getNome().trim().equals(nome)) return c.getValor();
-		}
-		return null;
+		Campo c = this.getCampo(nome);
+		
+		if(c == null) return null;
+		
+		return c.getValor();
 	}
 	
 	/**
@@ -117,13 +149,11 @@ public class Linha {
 	 * @see #getValueTipado(int)
 	 */
 	public Object getValueTipado(String nome) {
-		Iterator<Campo> i = colunas.iterator();
-		Campo c;
-		while(i.hasNext()) {
-			c = i.next();
-			if(c.getNome().trim().equals(nome)) return c.getValorTipado();
-		}
-		return null;
+		Campo c = this.getCampo(nome);
+		
+		if(c == null) return null;
+		
+		return c.getValorTipado();
 	}
 	
 	/**
@@ -144,12 +174,15 @@ public class Linha {
 	 * @see Linha#getCampo(int)
 	 */
 	public Campo getCampo(String nome) {
-		Iterator<Campo> i = colunas.iterator();
-		Campo c;
-		while(i.hasNext()) {
-			c = i.next();
-			if(c.getNome().trim().equals(nome)) return c;
+		for(int i = 0, j = this.colunas.size()- 1; i <= this.colunas.size()/2;i++,j--) {
+			if(this.colunas.get(i).getNome().trim().equals(nome)) {
+				return this.colunas.get(i);
+			}
+			else if(this.colunas.get(j).getNome().trim().equals(nome)) {
+				return this.colunas.get(j);
+			}
 		}
+		
 		return null;
 	}
 

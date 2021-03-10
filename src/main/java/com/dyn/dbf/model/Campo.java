@@ -78,7 +78,7 @@ public class Campo {
 	 * @return Uma {@link String} com os dados do campo em formato de texto.
 	 */
 	public String getValorAsString() {
-		return new String(valor,charset);
+		return this.getValorAsString(this.charset);
 	}
 	
 	public String getValorAsString(Charset charset) {
@@ -115,7 +115,7 @@ public class Campo {
 		ByteBuffer buffer = ByteBuffer.wrap(valor);
 		switch(tipo) {
 		case CARACTER:
-			 return new Character(buffer.asCharBuffer().get());
+			 return new Character((char)buffer.get());
 		case DATA:
 			int ano = buffer.get(valor,0,4).asIntBuffer().get();
 			int mes = buffer.get(valor,4,2).asIntBuffer().get();
@@ -124,7 +124,7 @@ public class Campo {
 			// O parâmetro de mês no gregorian calendar começa em 0;
 			return new GregorianCalendar(ano,mes-1,dia).getTime();
 		case FLUTUANTE:
-			return new Double(buffer.asDoubleBuffer().get());
+			return new Double(buffer.getFloat());
 		case LOGICO:
 			// O dbf padrão pode assumir os valores lógicos yYtT1 para true e nNfF para false.
 			// Há também o caso de campo indefinido com o valor de ?
@@ -136,9 +136,10 @@ public class Campo {
 			else
 				return Boolean.FALSE;
 		case MEMO:
-			return new String(valor,charset);
+			return new String(valor,charset).trim();
 		case NUMERICO:
-			return new Integer(buffer.asIntBuffer().get());
+			return new Integer(Integer.parseInt(new String(valor,charset).trim()));
+			
 		default:
 			return null;
 		}
