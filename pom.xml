@@ -5,10 +5,41 @@
 	<groupId>com.dyn</groupId>
 	<artifactId>SimpleDBFReader</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-
+	
 	<name>SimpleDBFReader</name>
 	<description>Leitor de DBF simples para quem deseja tratar os dados antes de utiliza-los.</description>
-	
 	<url>https://github.com/Deynne/SimpleDBFReader</url>
+	<inceptionYear>2021</inceptionYear>
+	
+	<developers>
+		<developer>
+			<name>Deynne de Andrade Silva</name>
+			<email>deynne.a@gmail.com</email>
+			<timezone>Brazil/East</timezone>
+			<roles>
+				<role>
+					Desenvolvedor
+				</role>
+				<role>
+					Testador
+				</role>
+			</roles>
+			
+		</developer>
+	</developers>
+	
+	<licenses>
+		<license>
+			<name>APACHE LICENSE, VERSION 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<properties>
+		<maven.compiler.source>1.8</maven.compiler.source>
+     	<maven.compiler.target>1.8</maven.compiler.target>
+	</properties>
+
 	
 </project>
