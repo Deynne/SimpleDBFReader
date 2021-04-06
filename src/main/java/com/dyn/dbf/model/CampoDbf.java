@@ -51,9 +51,9 @@ public class CampoDbf {
 	/**
 	 * O Construtor do campo. Realiza a leitura do stream de dados do dbf e monta o campo.
 	 * O padrão de montagem do campo é feito seguindo o formato definido para o arquivo dbf.
-	 * @param dbfStream
-	 * @param charset
-	 * @return
+	 * @param dbfStream Stream do arquivo dbf sendo processado
+	 * @param charset o {@link Charset} utilizado para ler os dados como String.
+	 * @return uma instância de {@link CampoDbf} preenchida com os dados do campo lido
 	 */
 	public static CampoDbf buildCampo(DataInputStream dbfStream, Charset charset) {
 		try {
@@ -102,7 +102,7 @@ public class CampoDbf {
 	
 	/**
 	 * Para quem deseja trabalhar com o nome no formato original
-//	 * @return um <b>byte[ ]</b> representando o nome do campo.
+	 * @return um <b>byte[ ]</b> representando o nome do campo.
 	 */
 	public byte[] getNomeAsByte() {
 		return nome;

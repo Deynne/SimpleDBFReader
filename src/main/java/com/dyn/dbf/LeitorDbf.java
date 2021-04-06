@@ -123,7 +123,7 @@ public class LeitorDbf implements Closeable{
 	
 	/**
 	 * Fecha a os streams de dados
-	 * @throws Se ocorrer problemas ao fechar o stream de dados
+	 * @throws IOException Se ocorrer problemas ao fechar o stream de dados
 	 */
 	public void close() throws IOException {
 		dbfStream.close();
@@ -131,7 +131,7 @@ public class LeitorDbf implements Closeable{
 	}
 
 	/**
-	 * 
+	 *  Obtem a stream do arquivo dbf
 	 * @return Stream de dados utilizada para ler o dbf.
 	 */
 	public DataInputStream getDbfStream() {
@@ -139,7 +139,7 @@ public class LeitorDbf implements Closeable{
 	}
 
 	/**
-	 * 
+	 * Obtem o charset utilizado para criação das strings lidas a partir do arquivo
 	 * @return o charset definido para a leitura dos dados como string.
 	 */
 	public Charset getCharSet() {
@@ -147,7 +147,7 @@ public class LeitorDbf implements Closeable{
 	}
 
 	/**
-	 * Getter para o cabeçalho do arquivo dbf
+	 * Obtêm o {@link CabecalhoDbf} do arquivo sendo lido
 	 * @return retorna um {@link CabecalhoDbf} contendo informações de cabeçalho do arquivo dbf sendo lido.
 	 */
 	public CabecalhoDbf getCabecalho() {

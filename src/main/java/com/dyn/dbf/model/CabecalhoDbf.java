@@ -53,6 +53,7 @@ public class CabecalhoDbf {
 	 * Um construtor para o cabeçalho do dbf.
 	 * O padrão de montagem do cabeçalho é feito seguindo o formato definido para os arquivos dbf.
 	 * @param dbfStream O Stream do arquivo dbf sendo lido.
+	 * @param charset O charset utilizado para criar a string do nome dos campos
 	 */
 	public void buildCabecalho(DataInputStream dbfStream, Charset charset) {
 		if(dbfStream == null) return;
@@ -244,7 +245,7 @@ public class CabecalhoDbf {
 	
 	/**
 	 * O nome do campo de acordo com o indice
-	 * @param index o indice do campo.
+	 * @param indice o indice do campo.
 	 * @return Uma {@link String} com o nome do campo identificado no indice. <b>null</b> para indices invalidos.
 	 */
 	public String getNomeById(int indice) {

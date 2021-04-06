@@ -25,8 +25,6 @@ public class Linha {
 	
 	/**
 	 * Retorna os dados de uma linha de dados como strings.
-	 * @param registros A linha da qual se espera obter as informações como string
-	 * @param charset O charset que deve ser utilizado na conversão dos dados para string
 	 * @return Um {@link String}[] contendo os dados da linha.
 	 * @see #getValuesAsString(boolean)
 	 */
@@ -36,10 +34,9 @@ public class Linha {
 	
 	/**
 	 * Retorna os dados de uma linha de dados como strings
-	 * @param registros A linha da qual se espera obter as informações como string
-	 * @param charset O charset que deve ser utilizado na conversão dos dados para string
 	 * @param trim Indica se deve eliminar espaços em branco do dado
 	 * @return Um {@link String}[] contendo os dados da linha.
+	 * @see #getValuesAsString()
 	 */
 	public String[] getValuesAsString(boolean trim) {
 		List<String> l = new ArrayList<>();
@@ -92,7 +89,7 @@ public class Linha {
 	
 	/**
 	 * Retorna o valor de um campo de acordo com seu tipo
-	 * @param nome O indice do campo que se deseja obter o valor.
+	 * @param indice O indice do campo que se deseja obter o valor.
 	 * @return Um {@link Object} de acordo com o tipo do valor do campo. <b>null</b> caso a posição seja invalida.
 	 */
 	public Object getValueTipado(int indice) {
@@ -188,7 +185,7 @@ public class Linha {
 
 	/**
 	 * Retorna a lista de campos da linha
-	 * @return Uma {@link List}<{@link Campo}> com os campos presentes na linha.
+	 * @return Uma {@link List}&lt;{@link Campo}&gt; com os campos presentes na linha.
 	 */
 	public List<Campo> getColunas() {
 		return colunas;
@@ -196,16 +193,24 @@ public class Linha {
 
 	/**
 	 * O {@link Charset} utilizado para criação das {@link String}
-	 * @return
+	 * @return o {@link Charset} utilizado para tratamento dos dados como strings
 	 */
 	public Charset getCharset() {
 		return charset;
 	}
-
+	
+	/**
+	 * Define as colunas que estão presentes na linha
+	 * @param colunas uma {@link List}&lt;{@link Campo}&gt; com as colunas presentes na linha
+	 */
 	public void setColunas(List<Campo> colunas) {
 		this.colunas = colunas;
 	}
 
+	/**
+	 * Define o {@link Charset} a ser utilizado para criação das strings dos dados
+	 * @param charset o padrão de {@link Charset} a ser utilizado
+	 */
 	public void setCharset(Charset charset) {
 		this.charset = charset;
 	}

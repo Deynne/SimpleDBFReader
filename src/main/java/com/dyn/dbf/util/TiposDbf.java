@@ -40,8 +40,8 @@ public enum TiposDbf {
 	
 	/**
 	 * 
-	 * @param letra
-	 * @return
+	 * @param letra Um <b>byte</b> com o valor da letra que se deve buscar no enum.
+	 * @return o {@link TiposDbf} associado a letra informada
 	 */
 	public static TiposDbf encontrarPorValor(byte letra) {
 		for(TiposDbf t : TiposDbf.values()) {
@@ -53,7 +53,7 @@ public enum TiposDbf {
 	}
 	/**
 	 * 
-	 * @return
+	 * @return a letra associada ao valor do enum
 	 */
 	public char getLetra() {
 		return (char)letra;
