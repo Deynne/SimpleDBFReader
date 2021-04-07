@@ -1,11 +1,11 @@
-package com.dyn.dbf.model;
+package io.github.deynne.dbf.model;
 
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 
-import com.dyn.dbf.util.TiposDbf;
+import io.github.deynne.dbf.util.TiposDbf;
 
 /**
  * Um campo do cabeçalho do dbf. Cada campo representa uma coluna do arquivo.

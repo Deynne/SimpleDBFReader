@@ -1,4 +1,4 @@
-package com.dyn.dbf.model;
+package io.github.deynne.dbf.model;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
@@ -6,7 +6,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-import com.dyn.dbf.util.TiposDbf;
+import io.github.deynne.dbf.util.TiposDbf;
 
 /**
  * Campo de dados do arquivo dbf. Os dados lidos são convertidos para instâncias desta classe.

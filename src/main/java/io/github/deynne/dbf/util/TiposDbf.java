@@ -1,4 +1,4 @@
-package com.dyn.dbf.util;
+package io.github.deynne.dbf.util;
 
 /**
  * Enum com os possíveis tipos de dados do arquivo dbf.

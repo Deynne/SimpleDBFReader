@@ -1,4 +1,4 @@
-package com.dyn.dbf;
+package io.github.deynne.dbf;
 
 import java.io.Closeable;
 import java.io.DataInputStream;
@@ -11,11 +11,11 @@ import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
-import com.dyn.dbf.exceptions.LeituraIncorretaDeCampoException;
-import com.dyn.dbf.model.CabecalhoDbf;
-import com.dyn.dbf.model.Campo;
-import com.dyn.dbf.model.CampoDbf;
-import com.dyn.dbf.model.Linha;
+import io.github.deynne.dbf.exceptions.LeituraIncorretaDeCampoException;
+import io.github.deynne.dbf.model.CabecalhoDbf;
+import io.github.deynne.dbf.model.Campo;
+import io.github.deynne.dbf.model.CampoDbf;
+import io.github.deynne.dbf.model.Linha;
 
 /**
  * Um leitor simplificado para arquivos dbf. A partir dele é possível ler o arquivo e todas as linhas contidas nele como um {@link Campo}, assim como obter os dados

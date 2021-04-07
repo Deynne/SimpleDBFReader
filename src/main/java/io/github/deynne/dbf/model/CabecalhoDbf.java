@@ -1,4 +1,4 @@
-package com.dyn.dbf.model;
+package io.github.deynne.dbf.model;
 
 import java.util.List;
 import java.io.DataInputStream;

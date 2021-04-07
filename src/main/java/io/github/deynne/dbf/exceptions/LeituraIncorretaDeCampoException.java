@@ -1,4 +1,4 @@
-package com.dyn.dbf.exceptions;
+package io.github.deynne.dbf.exceptions;
 
 public class LeituraIncorretaDeCampoException extends Exception {
 
